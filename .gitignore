@@ -87,3 +87,6 @@ target/
 .venv/
 # Mypy cache
 .mypy_cache/
+
+
+*.csv

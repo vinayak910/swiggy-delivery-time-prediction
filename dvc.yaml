@@ -2,7 +2,18 @@ stages:
   data_cleaning:
     cmd: python src/data/data_cleaning.py
     deps:
-    - data/raw/swiggy.csv
-    - src/data/data_cleaning.py
+      - data/raw/swiggy.csv
+      - src/data/data_cleaning.py
     outs:
-    - data/cleaned/swiggy_cleaned.csv
+      - data/cleaned/swiggy_cleaned.csv
+
+  data_preparation:
+    cmd: python src/data/data_preparation.py 
+    deps: 
+      - data/cleaned/swiggy_cleaned.csv
+      - src/data/data_preparation.py
+    outs:
+      - data/interim/
+    params:
+      - test_size
+      - random_state

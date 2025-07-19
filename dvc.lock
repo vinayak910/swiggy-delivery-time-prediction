@@ -29,14 +29,17 @@ stages:
       size: 4466
     params:
       params.yaml:
-        random_state: 42
-        test_size: 0.2
+        Data_Preparation.random_state: 42
+        Data_Preparation.test_size: 0.2
     outs:
-    - path: data/interim/
+    - path: data/interim/test.csv
       hash: md5
-      md5: 9dc8ff6920aea1feb3d2f4a2b6d1d0cb.dir
-      size: 4505569
-      nfiles: 2
+      md5: 20172ab330931a534fcb3fb75bf1b77a
+      size: 901132
+    - path: data/interim/train.csv
+      hash: md5
+      md5: 08e8f74451482dfdf2f472e94acb5993
+      size: 3604437
   data_preprocessing:
     cmd: python src/features/data_preprocessing.py
     deps:
@@ -50,18 +53,58 @@ stages:
       size: 3604437
     - path: src/features/data_preprocessing.py
       hash: md5
-      md5: c0996bedc1f48f0ae5c5889e4ab1cd47
-      size: 6580
+      md5: e668d8caab6050c9f23fd374173a728c
+      size: 6865
     outs:
-    - path: data/processed/test_processed.csv
+    - path: data/processed/test_trans.csv
       hash: md5
       md5: 2519c7291782edca74e688cc944df5b9
       size: 1089313
-    - path: data/processed/train_processed.csv
+    - path: data/processed/train_trans.csv
       hash: md5
       md5: 0d2f47751596e1c0f6bffbf7bb582a07
       size: 4329420
     - path: models/preprocessor.joblib
       hash: md5
-      md5: d7d8a9720f5d4cd5e8b9fddf01dfcce0
-      size: 8189
+      md5: 7e407641f09e15c85ffaba74335ee03d
+      size: 7487
+  train:
+    cmd: python src/models/train.py
+    deps:
+    - path: data/processed/train_trans.csv
+      hash: md5
+      md5: 0d2f47751596e1c0f6bffbf7bb582a07
+      size: 4329420
+    - path: src/models/train.py
+      hash: md5
+      md5: b7b69ed8e77672b21bfffc93336aa161
+      size: 4910
+    params:
+      params.yaml:
+        Train.LightGBM:
+          n_estimators: 200
+          max_depth: 15
+          learning_rate: 0.025811265327068796
+          num_leaves: 84
+          n_jobs: -1
+        Train.Random_Forest:
+          n_estimators: 400
+          criterion: squared_error
+          max_depth: 14
+          max_features: 0.7
+          min_samples_leaf: 5
+          verbose: 1
+          n_jobs: -1
+    outs:
+    - path: models/model.joblib
+      hash: md5
+      md5: b8f40cd4fb2e407fa07ef9ed614ea3d5
+      size: 109989096
+    - path: models/power_transformer.joblib
+      hash: md5
+      md5: 745137997ff81066d277b6399b635e77
+      size: 837
+    - path: models/stacking_regressor.joblib
+      hash: md5
+      md5: f9ec360ec2684c88961edb2bb70c91c8
+      size: 109972410

@@ -89,3 +89,4 @@ target/
 
 
 *.csv
+/run_information.json
